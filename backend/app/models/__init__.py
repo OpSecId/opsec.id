@@ -1,5 +1,6 @@
-from .base import BaseModel
+from .credential import Credential
+from .presentation import Presentation, VerifiablePresentation
+from .options import IssuanceOptions, VerificationOptions
+from .did_document import DidDocument
 
-__all__ = [
-    'BaseModel'
-]
+__all__ = ["DidDocument", "Credential", "Presentation", "VerifiablePresentation", "IssuanceOptions", "VerificationOptions"]
