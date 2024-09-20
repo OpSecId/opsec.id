@@ -10,8 +10,8 @@ class Settings(BaseSettings):
     PROJECT_TITLE: str = "Open and Secure Identity Platform"
     PROJECT_VERSION: str = "v0"
     
-    SECRET_KEY: str = "xkAYiXKHgDP^Mf#!^TLpweG7cMukRrPm"
-    MULTIKEY: str = 'z6MkqCT7h1oBe6a9EmiBaZGAwGHJSvRdbcRqZeg6ybk1qwqy'
+    SECRET_KEY: str = os.environ["SECRET_KEY"]
+    MULTIKEY: str = os.environ["MULTIKEY"]
 
     DOMAIN: str = os.environ["DOMAIN"]
     ASKAR_DB: str = "sqlite://app.db"

@@ -26,6 +26,7 @@ class AskarWallet:
         # key = Key(LocalKeyHandle()).from_seed(KeyAlg.P384, self.store_key)
         did_web = f'did:web:{settings.DOMAIN}'
         multikey = self.key_to_multikey(key)
+        print(f'did:key:{multikey}')
         did_doc = DidDocument(
             id=did_web,
             authentication=[f'{did_web}#key-01'],

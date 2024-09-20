@@ -47,7 +47,7 @@ class BitstringStatusList:
                 "statusPurpose": ['revocation', 'suspension']
             },
         }
-        print(self.id)
+        print(f'https://{settings.DOMAIN}/credentials/status/{self.id}')
         await AskarStorage().store('statusListCredential', self.id, status_list_credential)
         await AskarStorage().store('statusListEntries', self.id, [0, self.lenght - 1])
 
