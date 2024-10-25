@@ -1,0 +1,84 @@
+<html lang="en" dir="ltr" data-bs-theme="dark" data-color-theme="Blue_Theme" data-layout="vertical"
+	data-boxed-layout="boxed" data-card="shadow">
+{% include('layouts/head.jinja') %}
+
+<body data-sidebartype="full">
+	<!-- Preloader -->
+	<div class="preloader" style="display: none;">
+		<img src="{{url_for('static', filename='icons/icon_512x512.png')}}" alt="loader" class="lds-ripple img-fluid">
+	</div>
+	<div id="main-wrapper">
+		<!-- Sidebar Start -->
+		{% include('layouts/sidebar.jinja') %}
+		<!--  Sidebar End -->
+		<div class="page-wrapper">
+			<!--  Header Start -->
+			{% include('layouts/header.jinja') %}
+			<!--  Header End -->
+			{% include('layouts/sidebar2.jinja') %}
+			{% block page %}{% endblock %}
+			<button py-click="create_key">Create Key</button>
+
+			<button id="html5-qrcode-button-camera-permission" type="button"
+				onclick="startScanner()" class="btn btn-danger p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"
+				data-bs-toggle="modal" data-bs-target="#qr-modal">
+				<i class="icon ti ti-qrcode fs-7"></i>
+			</button>
+		</div>
+
+		{# <button
+			class="btn btn-danger p-3 rounded-circle d-flex align-items-center justify-content-center customizer-btn"
+			type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample"
+			aria-controls="offcanvasExample">
+			<i class="icon ti ti-settings fs-7"></i>
+		</button> #}
+		{% include('layouts/hidden_settings.jinja') %}
+		<script>
+			function handleColorTheme(e) {
+				document.documentElement.setAttribute("data-color-theme", e);
+			}
+		</script>
+	</div>
+
+	<!-- Modals -->
+	<!--  Invitation -->
+	{% include ('components/invitation_modal.jinja') %}
+	
+	<!--  Scanner -->
+	<div id="qr-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<center>
+					<div id="qr-reader" style="width:100%;height:25%"></div>
+					{% include('components/qr_scanner/scanner.jinja')%}
+					<script src="{{url_for('static', filename='js/html5-qrcode.js')}}"></script>
+				</center>
+			</div>
+		</div>
+	</div>
+	<!--  Search Bar -->
+	{# {% include('layouts/search_bar.jinja') %} #}
+
+	</div>
+	<div class="dark-transparent sidebartoggler"></div>
+	<!-- Import Js Files -->
+	<script src="{{url_for('static', filename='libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{url_for('static', filename='libs/simplebar/dist/simplebar.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/app.dark.init.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/theme.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/app.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/sidebarmenu.js')}}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+	<script>
+		const { startRegistration, startAuthentication } = SimpleWebAuthnBrowser;
+	</script>
+
+	<!-- solar icons -->
+	<script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+
+</body>
+
+</html>

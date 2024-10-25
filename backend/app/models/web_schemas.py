@@ -1,7 +1,8 @@
 from config import settings
 from typing import Dict, Any
 from pydantic import BaseModel, Field
-from app.models import Credential, IssuanceOptions, VerificationOptions, Presentation, VerifiablePresentation
+from vcdm.models import Credential
+from app.models import IssuanceOptions, VerificationOptions, Presentation, VerifiablePresentation
 import re, uuid
 from datetime import datetime
 from app.utils import id_from_string
@@ -14,11 +15,11 @@ class RequestBody(BaseModel):
 
 class IssueCredentialRequest(RequestBody):
     credential: Credential = Field()
-    options: IssuanceOptions = Field()
+    options: IssuanceOptions = Field(None)
     
 class VerifyCredentialRequest(RequestBody):
     verifiableCredential: Credential = Field()
-    options: VerificationOptions = Field()
+    options: VerificationOptions = Field(None)
     
 class UpdateCredentialRequest(RequestBody):
     credentialId: str = Field(example=id_from_string('credentialIdExample'))
@@ -26,10 +27,10 @@ class UpdateCredentialRequest(RequestBody):
 
 class CreatePresentationRequest(RequestBody):
     presentation: Presentation = Field()
-    options: IssuanceOptions = Field()
+    options: IssuanceOptions = Field(None)
 
 class VerifyPresentationRequest(RequestBody):
     verifiablePresentation: VerifiablePresentation = Field()
-    options: IssuanceOptions = Field()
+    options: IssuanceOptions = Field(None)
 
 

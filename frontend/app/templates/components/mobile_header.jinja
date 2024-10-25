@@ -1,0 +1,145 @@
+<div class="d-block d-lg-none py-9 py-xl-0">
+    <img src="{{url_for('static', filename='img/logo/logo-h-mobile-header.png')}}" height="50px" alt="opsecid-img">
+</div>
+<a class="navbar-toggler p-0 border-0 nav-icon-hover-bg rounded-circle" href="javascript:void(0)"
+    data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+    aria-label="Toggle navigation">
+    <iconify-icon icon="solar:menu-dots-bold-duotone" class="fs-6"></iconify-icon>
+</a>
+<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <div class="d-flex align-items-center justify-content-between">
+        <ul class="navbar-nav flex-row mx-auto ms-lg-auto align-items-center justify-content-center">
+            {# <li class="nav-item dropdown">
+                <a href="javascript:void(0)"
+                    class="nav-link nav-icon-hover-bg rounded-circle d-flex d-lg-none align-items-center justify-content-center"
+                    type="button" data-bs-toggle="offcanvas" data-bs-target="#mobilenavbar"
+                    aria-controls="offcanvasWithBothOptions">
+                    <iconify-icon icon="solar:sort-line-duotone" class="fs-6"></iconify-icon>
+                </a>
+            </li> #}
+            <li class="nav-item dropdown nav-icon-hover-bg rounded-circle">
+                <a class="nav-link position-relative" href="javascript:void(0)" id="drop-invitation" aria-expanded="false">
+                    <iconify-icon icon="ic:baseline-group-add" class="fs-6"></iconify-icon>
+                </a>
+                <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
+                    aria-labelledby="drop-invitation">
+                    <div class="d-flex align-items-center justify-content-between py-3 px-7">
+                        {# <img width="100%" src="{{ qrcode(session['invitation'], error_correction='H', icon_img='img/icon.png')  }}"> #}
+                        <img width="100%" src="{{ qrcode(session['invitation'], error_correction='H') }}">
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link moon dark-layout nav-icon-hover-bg rounded-circle" href="javascript:void(0)"
+                    style="display: none;">
+                    <iconify-icon icon="solar:moon-line-duotone" class="moon fs-6"
+                        style="display: none;"></iconify-icon>
+                </a>
+                <a class="nav-link sun light-layout nav-icon-hover-bg rounded-circle" href="javascript:void(0)"
+                    style="display: flex;">
+                    <iconify-icon icon="solar:sun-2-line-duotone" class="sun fs-6"
+                        style="display: flex;"></iconify-icon>
+                </a>
+            </li>
+            {# <li class="nav-item d-block d-xl-none">
+                <a class="nav-link nav-icon-hover-bg rounded-circle" href="javascript:void(0)" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    <iconify-icon icon="solar:magnifer-line-duotone" class="fs-6"></iconify-icon>
+                </a>
+            </li> #}
+
+            <!-- ------------------------------- -->
+            <!-- start notification Dropdown -->
+            <!-- ------------------------------- -->
+            <li class="nav-item dropdown nav-icon-hover-bg rounded-circle">
+                <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
+                    <iconify-icon icon="solar:bell-bing-line-duotone" class="fs-6"></iconify-icon>
+                </a>
+                <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up"
+                    aria-labelledby="drop2">
+                    <div class="d-flex align-items-center justify-content-between py-3 px-7">
+                        <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
+                        <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm">1 new</span>
+                    </div>
+                    <div class="message-body" data-simplebar="init">
+                        <div class="simplebar-wrapper" style="margin: 0px;">
+                            <div class="simplebar-height-auto-observer-wrapper">
+                                <div class="simplebar-height-auto-observer"></div>
+                            </div>
+                            <div class="simplebar-mask">
+                                <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
+                                    <div class="simplebar-content-wrapper" tabindex="0" role="region"
+                                        aria-label="scrollable content" style="height: auto; overflow: hidden;">
+                                        <div class="simplebar-content" style="padding: 0px;">
+                                            <a href="javascript:void(0)"
+                                                class="py-6 px-7 d-flex align-items-center dropdown-item gap-3">
+                                                <span
+                                                    class="flex-shrink-0 bg-danger-subtle rounded-circle round d-flex align-items-center justify-content-center fs-6 text-danger">
+                                                    <iconify-icon icon="solar:widget-3-line-duotone"></iconify-icon>
+                                                </span>
+                                                <div class="w-75">
+                                                    <div class="d-flex align-items-center justify-content-between">
+                                                        <h6 class="mb-1 fw-semibold">Launch Admin</h6>
+                                                        <span class="d-block fs-2">9:30 AM</span>
+                                                    </div>
+                                                    <span class="d-block text-truncate text-truncate fs-11">Just
+                                                        see the my new admin!</span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="simplebar-placeholder" style="width: 0px; height: 0px;"></div>
+                        </div>
+                        <div class="simplebar-track simplebar-horizontal" style="visibility: hidden;">
+                            <div class="simplebar-scrollbar" style="width: 0px; display: none;"></div>
+                        </div>
+                        <div class="simplebar-track simplebar-vertical" style="visibility: hidden;">
+                            <div class="simplebar-scrollbar" style="height: 0px; display: none;"></div>
+                        </div>
+                    </div>
+                    <div class="py-6 px-7 mb-1">
+                        <button class="btn btn-primary w-100">See All Notifications</button>
+                    </div>
+
+                </div>
+            </li>
+            <!-- ------------------------------- -->
+            <!-- end notification Dropdown -->
+            <!-- ------------------------------- -->
+
+            <!-- ------------------------------- -->
+            <!-- start language Dropdown -->
+            <!-- ------------------------------- -->
+            {# <li class="nav-item dropdown nav-icon-hover-bg rounded-circle">
+                <a class="nav-link" href="javascript:void(0)" id="drop2" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    <img src="../assets/images/flag/icon-flag-en.svg" alt="opsecid-img" width="20px" height="20px"
+                        class="rounded-circle object-fit-cover round-20">
+                </a>
+                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                    <div class="message-body">
+                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2 py-3 px-4 dropdown-item">
+                            <div class="position-relative">
+                                <img src="../assets/images/flag/icon-flag-en.svg" alt="opsecid-img" width="20px"
+                                    height="20px" class="rounded-circle object-fit-cover round-20">
+                            </div>
+                            <p class="mb-0 fs-3">English (UK)</p>
+                        </a>
+                        <a href="javascript:void(0)" class="d-flex align-items-center gap-2 py-3 px-4 dropdown-item">
+                            <div class="position-relative">
+                                <img src="../assets/images/flag/icon-flag-fr.svg" alt="opsecid-img" width="20px"
+                                    height="20px" class="rounded-circle object-fit-cover round-20">
+                            </div>
+                            <p class="mb-0 fs-3">français (French)</p>
+                        </a>
+                    </div>
+                </div>
+            </li> #}
+            <!-- ------------------------------- -->
+            <!-- end language Dropdown -->
+            <!-- ------------------------------- -->
+        </ul>
+    </div>
+</div>

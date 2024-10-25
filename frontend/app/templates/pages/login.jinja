@@ -1,0 +1,111 @@
+<html lang="en" dir="ltr" data-bs-theme="dark" data-color-theme="Blue_Theme" data-layout="vertical" data-boxed-layout="boxed" data-card="shadow">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicon icon-->
+  <link rel="shortcut icon" type="image/png" href="{{url_for('static', filename='icons/icon_144x144.png')}}">
+
+  <!-- Core Css -->
+  <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}">
+
+  <title>{{ title }}</title>
+
+
+  <meta name="theme-color" content="#fe9839" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{{url_for('static', filename='icons/icon_144x144.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='icons/icon_192x192.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='icons/icon_512x512.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='icons/icon_144x144.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='icons/icon_192x192.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='icons/icon_512x512.png')}}" type="image/png">
+  <link rel="manifest" href="/manifest.json">
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register("/sw.js").then(function (registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function (err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+</head>
+
+<body data-sidebartype="full">
+  <!-- Preloader -->
+  <div class="preloader" style="display: none;">
+    <img src="../assets/images/logos/favicon.png" alt="loader" class="lds-ripple img-fluid">
+  </div>
+  <div id="main-wrapper">
+    <div class="position-relative overflow-hidden auth-bg min-vh-100 w-100 d-flex align-items-center justify-content-center">
+      <div class="d-flex align-items-center justify-content-center w-100">
+        <div class="row justify-content-center w-100 my-5 my-xl-0">
+          <div class="col-md-9 d-flex flex-column justify-content-center">
+            <div class="card mb-0 bg-body auth-login m-auto w-100">
+              <div class="row gx-0">
+                <!-- ------------------------------------------------- -->
+                <!-- Part 1 -->
+                <!-- ------------------------------------------------- -->
+                <div class="col-xl-6 border-end">
+                  <div class="row justify-content-center py-4">
+                    <div class="col-lg-11">
+                      <div class="card-body">
+                        <a href="../dark/index.html" class="text-nowrap logo-img d-block mb-4 w-100">
+                          <img src="../assets/images/logos/logo.svg" class="dark-logo" alt="Logo-Dark" style="display: none;">
+                        </a>
+                        <form>
+
+                          <a href="../dark/index.html" class="btn btn-dark w-100 py-8 mb-4 rounded-1">Authenticate</a>
+
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <!-- ------------------------------------------------- -->
+                <!-- Part 2 -->
+                <!-- ------------------------------------------------- -->
+                <div class="col-xl-6 d-none d-xl-block">
+                  <div class="row justify-content-center align-items-center h-100 pb-5">
+                    <div class="col-lg-9">
+                      <div id="auth-login">
+
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dark-transparent sidebartoggler"></div>
+	<div class="dark-transparent sidebartoggler"></div>
+	<!-- Import Js Files -->
+	<script src="{{url_for('static', filename='libs/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+	<script src="{{url_for('static', filename='libs/simplebar/dist/simplebar.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/app.dark.init.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/theme.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/app.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/theme/sidebarmenu.js')}}"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.umd.min.js"></script>
+	<script>
+		const { startRegistration, startAuthentication } = SimpleWebAuthnBrowser;
+	</script>
+
+	<!-- solar icons -->
+	<script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+
+</body></html>

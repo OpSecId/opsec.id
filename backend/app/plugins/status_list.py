@@ -6,6 +6,7 @@ import uuid
 from app.plugins.askar import AskarStorage
 from app.plugins.data_integrity import DataIntegrity
 from app.utils import id_from_string
+from multiformats import multibase
 
 class BitstringStatusList:
     def __init__(self):
@@ -20,13 +21,15 @@ class BitstringStatusList:
         # https://www.w3.org/TR/vc-bitstring-status-list/#bitstring-generation-algorithm
         statusListBitarray = BitArray(bin=bitstring)
         statusListCompressed = gzip.compress(statusListBitarray.bytes)
-        statusList_encoded = base64.urlsafe_b64encode(statusListCompressed).decode("utf-8").rstrip("=")
+        # statusList_encoded = base64.urlsafe_b64encode(statusListCompressed).decode("utf-8").rstrip("=")
+        statusList_encoded = multibase.encode(statusListCompressed, "base64url")
         return statusList_encoded
 
 
     def expand(self, encoded_list):
         # https://www.w3.org/TR/vc-bitstring-status-list/#bitstring-expansion-algorithm
-        statusListCompressed = base64.urlsafe_b64decode(encoded_list)
+        # statusListCompressed = base64.urlsafe_b64decode(encoded_list)
+        statusListCompressed = multibase.decode(encoded_list)
         statusListBytes = gzip.decompress(statusListCompressed)
         statusListBitarray = BitArray(bytes=statusListBytes)
         statusListBitstring = statusListBitarray.bin
@@ -47,7 +50,7 @@ class BitstringStatusList:
                 "statusPurpose": ['revocation', 'suspension']
             },
         }
-        print(f'https://{settings.DOMAIN}/credentials/status/{self.id}')
+        print(f'Status List: {self.endpoint}')
         await AskarStorage().store('statusListCredential', self.id, status_list_credential)
         await AskarStorage().store('statusListEntries', self.id, [0, self.lenght - 1])
 
@@ -55,7 +58,7 @@ class BitstringStatusList:
     async def create_entry(self, purpose='revocation'):
         # https://www.w3.org/TR/vc-bitstring-status-list/#example-example-statuslistcredential
         storage = AskarStorage()
-        status_entries = await storage.fetch('statusListEntries')
+        status_entries = await storage.fetch('statusListEntries', self.id)
         # Find an unoccupied index
         status_index = random.choice(
             [
@@ -65,16 +68,14 @@ class BitstringStatusList:
             ]
         )
         status_entries.append(status_index)
-        await storage.update('statusListEntries', status_entries)
-        status_credential = await storage.fetch('statusListCredential')
+        await storage.update('statusListEntries', self.id, status_entries)
 
-        credential_status_id = status_credential['id']
         credential_status_entry = {
-            'id': f'{credential_status_id}#{status_index}',
+            'id': f'{self.endpoint}#{status_index}',
             'type': 'BitstringStatusListEntry',
             'statusPurpose': purpose,
-            'statusListIndex': status_index,
-            'statusListCredential': status_credential['id']
+            'statusListIndex': str(status_index),
+            'statusListCredential': self.endpoint
         }
 
         return credential_status_entry

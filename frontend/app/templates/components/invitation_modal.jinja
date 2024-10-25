@@ -1,0 +1,9 @@
+<div id="invitation-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="invitationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <center>
+                <img src="{{ qrcode(session['invitation'], error_correction='H', icon_img='img/icon.png')  }}">
+            </center>
+        </div>
+    </div>
+</div>

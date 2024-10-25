@@ -1,5 +1,6 @@
 from app.cryptosuites import CRYPTOSUITES
 from config import settings
+from fastapi import HTTPException
 
 
 class DataIntegrity:
@@ -50,6 +51,8 @@ class DataIntegrity:
         all_proofs = all_proofs if isinstance(all_proofs, list) else [all_proofs]
         all_verifications = []
         for proof in all_proofs:
+            if proof['cryptosuite'] not in CRYPTOSUITES:
+                raise HTTPException(status_code=400, detail="Unsupported cryptosuite.")
             cryptosuite = CRYPTOSUITES[proof['cryptosuite']]()
             verified = await cryptosuite.verify_proof(unsecured_document=vc, proof=proof)
             all_verifications.append(verified)

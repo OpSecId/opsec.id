@@ -8,15 +8,15 @@ class BaseModel(BaseModel):
 
 
 class IssuanceOptions(BaseModel):
-    type: str = Field(None, example='DataIntegrityProof')
-    cryptosuite: str = Field(None, example='eddsa-jcs-2022')
+    type: str = Field('DataIntegrityProof')
+    cryptosuite: str = Field('eddsa-jcs-2022')
     previousProof: SkipJsonSchema[Union[str, List[str]]] = Field(None)
     securingMechanism: SkipJsonSchema[str] = Field(None)
-    statusPurpose: Union[str, List[str]] = Field(None, example='revocation')
+    statusPurpose: Union[str, List[str]] = Field(None)
     credentialId: SkipJsonSchema[str] = Field(None)
 
 
 class VerificationOptions(BaseModel):
-    returnResults: bool = Field(None, example=True)
-    returnCredential: bool = Field(None, example=True)
-    returnProblemDetails: bool = Field(None, example=True)
+    returnResults: bool = Field(False)
+    returnCredential: bool = Field(False)
+    returnProblemDetails: bool = Field(False)

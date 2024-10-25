@@ -4,6 +4,7 @@ import json
 CONTEXT_DIR = 'app/contexts/'
 
 CACHED_CONTEXTS = {
+    'https://www.w3.org/2018/credentials/v1': 'credentials_v1',
     'https://www.w3.org/ns/credentials/v2': 'credentials_v2',
     'https://www.w3.org/ns/credentials/examples/v2': 'credentials_examples_v2'
 }

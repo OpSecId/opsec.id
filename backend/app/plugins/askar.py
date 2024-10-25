@@ -9,55 +9,25 @@ from app.models.did_document import DidDocument, VerificationMethod, Service
 
 PREFIXES = {"ed25519": "ed01"}
 ALGORITHMS = {"6M": "ed25519"}
+KEY_ALG = {"ed25519": KeyAlg.ED25519}
 
 
 class AskarWallet:
     def __init__(self):
         self.db = settings.ASKAR_DB
+        self.did_web = f'did:web:{settings.DOMAIN}'
         self.store_key = Store.generate_raw_key(
             hashlib.md5(settings.DOMAIN.encode()).hexdigest()
         )
+        self.key = Key(LocalKeyHandle()).from_seed(KeyAlg.ED25519, settings.SECRET_KEY)
+        self.multikey = self.key_to_multikey(self.key)
+
+    async def _key(self, alg='ed25519'):
+        return Key(LocalKeyHandle()).from_seed(KEY_ALG[alg], settings.SECRET_KEY)
 
     async def provision(self, recreate=False):
         await Store.provision(self.db, "raw", self.store_key, recreate=recreate)
-        store = await Store.open(self.db, "raw", self.store_key)
-        key = Key(LocalKeyHandle()).from_seed(KeyAlg.ED25519, settings.SECRET_KEY)
-        # key = Key(LocalKeyHandle()).from_seed(KeyAlg.P256, self.store_key)
-        # key = Key(LocalKeyHandle()).from_seed(KeyAlg.P384, self.store_key)
-        did_web = f'did:web:{settings.DOMAIN}'
-        multikey = self.key_to_multikey(key)
-        print(f'did:key:{multikey}')
-        did_doc = DidDocument(
-            id=did_web,
-            authentication=[f'{did_web}#key-01'],
-            assertionMethod=[f'{did_web}#key-01'],
-            verificationMethod=[VerificationMethod(
-                id=f'{did_web}#key-01',
-                controller=did_web,
-                publicKeyMultibase=multikey,
-            )],
-            service=[Service(
-                id=f'{did_web}#vc-api',
-                type='LinkedDomains',
-                serviceEndpoint=f'https://{settings.DOMAIN}',
-            )],
-        ).model_dump()
-        try:
-            async with store.session() as session:
-                await session.insert(
-                    "key",
-                    multikey,
-                    key.get_secret_bytes(),
-                    {"~plaintag": "a", "enctag": "b"},
-                )
-                await session.insert(
-                    "didDocument",
-                    did_web,
-                    json.dumps(did_doc),
-                    {"~plaintag": "a", "enctag": "b"},
-                )
-        except:
-            pass
+        print(f'Multikey: {self.multikey}')
         
 
     def key_to_multikey(self, key):

@@ -4,6 +4,7 @@ from datetime import datetime, timezone, timedelta
 import validators
 import re
 from fastapi import HTTPException
+import rfc3987 
 
 def valid_datetime_string(datetime_string):
     try:
@@ -12,9 +13,14 @@ def valid_datetime_string(datetime_string):
     except:
         return False
     
-def valid_uri(value):
+def valid_did(value):
     DID_REGEX = re.compile("did:([a-z0-9]+):((?:[a-zA-Z0-9._%-]*:)*[a-zA-Z0-9._%-]+)")
-    if DID_REGEX.match(value) or validators.url(value):
+    if DID_REGEX.match(value):
+        return True
+    return False
+    
+def valid_uri(value):
+    if valid_did(value) or rfc3987.parse(value, rule='URI'):
         return True
     return False
     
