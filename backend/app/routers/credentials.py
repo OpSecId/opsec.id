@@ -19,7 +19,7 @@ async def issue_credential(request_body: IssueCredentialRequest, envelope: str |
     credential = request_body.get('credential')
     options = DataIntegrity().default_options()
     
-    LDProcessor().is_valid_context(credential['@context'].copy())
+    # LDProcessor().is_valid_context(credential['@context'].copy())
     
     if request_body.get('options'):
         options = request_body.get('options')
@@ -61,7 +61,7 @@ async def verify_issued_credential(request_body: VerifyCredentialRequest):
     vc = request_body.get('verifiableCredential')
     options = {}
     
-    LDProcessor().is_valid_context(vc['@context'].copy())
+    # LDProcessor().is_valid_context(vc['@context'].copy())
     
     if request_body.get('options'):
         options = request_body.get('options')
