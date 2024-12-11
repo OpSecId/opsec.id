@@ -19,21 +19,27 @@ app.add_middleware(
 
 api_router = APIRouter()
 
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-	exc_str = f'{exc}'.replace('\n', ' ').replace('   ', ' ')
-	logging.error(f"{request}: {exc_str}")
-	content = {'status_code': 10422, 'message': exc_str, 'data': None}
-	return JSONResponse(content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    exc_str = f"{exc}".replace("\n", " ").replace("   ", " ")
+    logging.error(f"{request}: {exc_str}")
+    content = {"status_code": 10422, "message": exc_str, "data": None}
+    return JSONResponse(
+        content=content, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY
+    )
+
 
 @api_router.get("/server/status", include_in_schema=False)
 async def server_status():
     return JSONResponse(status_code=200, content={"status": "ok"})
 
+
 @api_router.get("/.well-known/did.json", include_in_schema=False)
 async def get_did_document():
-    did_doc = await AskarStorage().fetch('didDocument', f'did:web:{settings.DOMAIN}')
+    did_doc = await AskarStorage().fetch("didDocument", f"did:web:{settings.DOMAIN}")
     return JSONResponse(status_code=200, content=did_doc)
+
 
 api_router.include_router(credentials.router)
 api_router.include_router(presentations.router)

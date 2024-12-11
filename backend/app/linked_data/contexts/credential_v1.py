@@ -1,7 +1,7 @@
-{
+CREDENTIAL_V1 = {
     "@context": {
       "@version": 1.1,
-      "@protected": true,
+      "@protected": True,
   
       "id": "@id",
       "type": "@type",
@@ -10,7 +10,7 @@
         "@id": "https://www.w3.org/2018/credentials#VerifiableCredential",
         "@context": {
           "@version": 1.1,
-          "@protected": true,
+          "@protected": True,
   
           "id": "@id",
           "type": "@type",
@@ -24,7 +24,7 @@
             "@type": "@id",
             "@context": {
               "@version": 1.1,
-              "@protected": true,
+              "@protected": True,
   
               "id": "@id",
               "type": "@type",
@@ -48,7 +48,7 @@
             "@type": "@id",
             "@context": {
               "@version": 1.1,
-              "@protected": true,
+              "@protected": True,
   
               "id": "@id",
               "type": "@type",
@@ -68,7 +68,7 @@
         "@id": "https://www.w3.org/2018/credentials#VerifiablePresentation",
         "@context": {
           "@version": 1.1,
-          "@protected": true,
+          "@protected": True,
   
           "id": "@id",
           "type": "@type",
@@ -86,7 +86,7 @@
         "@id": "https://w3id.org/security#EcdsaSecp256k1Signature2019",
         "@context": {
           "@version": 1.1,
-          "@protected": true,
+          "@protected": True,
   
           "id": "@id",
           "type": "@type",
@@ -105,7 +105,7 @@
             "@type": "@vocab",
             "@context": {
               "@version": 1.1,
-              "@protected": true,
+              "@protected": True,
   
               "id": "@id",
               "type": "@type",
@@ -125,7 +125,7 @@
         "@id": "https://w3id.org/security#EcdsaSecp256r1Signature2019",
         "@context": {
           "@version": 1.1,
-          "@protected": true,
+          "@protected": True,
   
           "id": "@id",
           "type": "@type",
@@ -144,7 +144,7 @@
             "@type": "@vocab",
             "@context": {
               "@version": 1.1,
-              "@protected": true,
+              "@protected": True,
   
               "id": "@id",
               "type": "@type",
@@ -164,7 +164,7 @@
         "@id": "https://w3id.org/security#Ed25519Signature2018",
         "@context": {
           "@version": 1.1,
-          "@protected": true,
+          "@protected": True,
   
           "id": "@id",
           "type": "@type",
@@ -183,7 +183,7 @@
             "@type": "@vocab",
             "@context": {
               "@version": 1.1,
-              "@protected": true,
+              "@protected": True,
   
               "id": "@id",
               "type": "@type",
@@ -203,7 +203,7 @@
         "@id": "https://w3id.org/security#RsaSignature2018",
         "@context": {
           "@version": 1.1,
-          "@protected": true,
+          "@protected": True,
   
           "challenge": "sec:challenge",
           "created": {"@id": "http://purl.org/dc/terms/created", "@type": "xsd:dateTime"},
@@ -216,7 +216,7 @@
             "@type": "@vocab",
             "@context": {
               "@version": 1.1,
-              "@protected": true,
+              "@protected": True,
   
               "id": "@id",
               "type": "@type",

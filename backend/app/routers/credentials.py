@@ -1,80 +1,116 @@
-from fastapi import APIRouter, Request, Response
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from vcdm.models import Credential
 from fastapi import HTTPException
-from app.models.web_schemas import IssueCredentialRequest, VerifyCredentialRequest, UpdateCredentialRequest
+from app.models.web_schemas import (
+    UpdateCredentialRequest,
+)
 from app.plugins import DataIntegrity, VcJose, AskarStorage, BitstringStatusList
 from datetime import datetime, timezone, timedelta
 import json
+import copy
 import uuid
-from app.utils import check_validity_period
-from vcdm.linked_data import LDProcessor
+from app.utils import check_validity_period, process_request
+from vcdm.models import Credential
+# from vcdm.linked_data import LDProcessor
+from app.linked_data import LDProcessor, LDProcessorError
+
 
 router = APIRouter(tags=["Credentials"])
 
 
 @router.post("/credentials/issue")
-async def issue_credential(request_body: IssueCredentialRequest, envelope: str | None = None):
-    request_body = request_body.model_dump()
-    credential = request_body.get('credential')
-    options = DataIntegrity().default_options()
+async def issue_credential(request: Request):
+    request_body = await process_request(request)
+    credential = request_body.get("credential")
+    try:
+        Credential.model_validate(credential)
+    except:
+        raise HTTPException(status_code=400)
     
-    # LDProcessor().is_valid_context(credential['@context'].copy())
+    try:
+        if LDProcessor().detect_undefined_terms(copy.deepcopy(credential)):
+            raise HTTPException(status_code=400)
+    except LDProcessorError:
+        raise HTTPException(status_code=400)
     
-    if request_body.get('options'):
-        options = request_body.get('options')
+
+    options = request_body.get("options")
+    options = options if options else DataIntegrity().default_options()
     
-    if 'id' not in credential:
-        credential_id = f'urn:uuid:{str(uuid.uuid4())}'
-        credential['id'] = credential_id
+    credential_id = str(uuid.uuid4())
+    credential['id'] = f'urn:uuid:{credential_id}'
+
+    if options.get('statusPurpose', None):
+        status = BitstringStatusList()
+        credential['credentialStatus'] = await status.create_entry(options.pop('statusPurpose'))
+
+    if options.get('securingMechanism', None) == 'EnvelopingProof':
+        vc_jwt = await VcJose().issue_credential(credential)
+        enveloped_vc = {
+            '@context': 'https://www.w3.org/ns/credentials/v2',
+            'type': 'EnvelopedVerifiableCredential',
+            'id': f'data:application/vc+jwt,{vc_jwt}'
+        }
+        return JSONResponse(status_code=201, content={"verifiableCredential": enveloped_vc})
         
-    if 'statusPurpose' in options:
-        credential['credentialStatus'] = await BitstringStatusList().create_entry(options.pop('statusPurpose'))
-    
+
     vc = await DataIntegrity().issue_credential(credential, options)
-    
-    await AskarStorage().store('credential', credential['id'], vc)
-    
-    if envelope == '':
-        vc = await VcJose().issue_credential(vc)
-        
+
+    # await AskarStorage().store('application/vc', credential_id, vc)
+    # await AskarStorage().store('application/vc+jwt', credential_id, vc_jwt)
     return JSONResponse(status_code=201, content={"verifiableCredential": vc})
 
 
 @router.get("/credentials/{credential_id}")
-async def get_credential(credential_id: str, response: Response, request: Request):
-    vc = await AskarStorage().fetch('credential', credential_id)
-    if request.headers['accept'] == 'application/vc-ld+jwt':
-        vc = await VcJose().issue_credential(vc)
-        vc_jwt = vc['id'].split(',')[-1]
-        headers = {"Content-Type": "application/vc-ld+jwt"}
-        return JSONResponse(status_code=200, content=vc_jwt, headers=headers)
-    
-    headers = {"Content-Type": "application/vc"}
-    return JSONResponse(status_code=200, content=vc, headers=headers)
+async def get_credential(credential_id: str, request: Request):
+    if "application/vc+jwt" in request.headers["accept"]:
+        return JSONResponse(
+            status_code=200,
+            headers={"Content-Type": "application/vc+jwt"},
+            content=await AskarStorage().fetch("application/vc+jwt", credential_id)
+        )
+    return JSONResponse(
+        status_code=200,
+        headers={"Content-Type": "application/vc"},
+        content=await AskarStorage().fetch("application/vc", credential_id)
+    )
 
 
 @router.post("/credentials/verify")
-async def verify_issued_credential(request_body: VerifyCredentialRequest):
+async def verify_issued_credential(request: Request):
+    request_body = await process_request(request)
+    vc = request_body.get("verifiableCredential")
     
-    request_body = request_body.model_dump()
-    vc = request_body.get('verifiableCredential')
-    options = {}
+    try:
+        if LDProcessor().detect_undefined_terms(copy.deepcopy(vc)):
+            raise HTTPException(status_code=400)
+    except LDProcessorError:
+        raise HTTPException(status_code=400)
+
+    options = request_body.get("options")
+    options = options if options else {}
     
-    # LDProcessor().is_valid_context(vc['@context'].copy())
-    
-    if request_body.get('options'):
-        options = request_body.get('options')
-    
-    check_validity_period(vc)
-    
-    if "EnvelopedVerifiableCredential" in vc['type']:
-        verification_results = await VcJose().verify_credential(vc)
+    if vc.get('type', None) == 'EnvelopedVerifiableCredential':
+        try:
+            assert vc.get('@context') == 'https://www.w3.org/ns/credentials/v2'
+            assert vc.get('id').startswith('data:')
+            verification_results = {'verified': True}
+        except:
+            verification_results = {'verified': False}
     else:
+        try:
+            Credential.model_validate(vc)
+        except:
+            raise HTTPException(status_code=400)
+
+        check_validity_period(vc)
         verification_results = await DataIntegrity().verify_credential(vc, options)
-    if verification_results['verified']:
-        return JSONResponse(status_code=200, content=verification_results)
-    return JSONResponse(status_code=400, content=verification_results)
+    
+    return JSONResponse(
+        status_code=200 if verification_results["verified"] else 400, 
+        content=verification_results
+    )
 
 
 @router.post("/credentials/status")
@@ -83,12 +119,30 @@ async def update_issued_credential_status(request_body: UpdateCredentialRequest)
 
 
 @router.get("/credentials/status/{status_list_id}")
-async def get_status_list_credential(status_list_id: str, envelope: str | None = None):
-    status_list_credential = await AskarStorage().fetch('statusListCredential', status_list_id)
+async def get_status_list_credential(status_list_id: str, request: Request):
+    status_list_credential = await AskarStorage().fetch(
+        "statusListCredential", status_list_id
+    )
+    
+    if "application/vc+jwt" in request.headers["accept"]:
+        status_list_vc = await VcJose().issue_credential(status_list_credential)
+        return JSONResponse(
+            status_code=200,
+            headers={"Content-Type": "application/vc+jwt"},
+            content=status_list_vc
+        )
+        
     options = DataIntegrity().default_options()
-    options['created'] = datetime.now(timezone.utc).isoformat('T', 'seconds')
-    options['expires'] = (datetime.now(timezone.utc)+ timedelta(minutes=5)).isoformat('T', 'seconds')
-    status_list_vc = await DataIntegrity().issue_credential(status_list_credential, options)
-    if envelope == '':
-        status_list_vc = await VcJose().issue_credential(status_list_vc)
-    return JSONResponse(status_code=200, content=status_list_vc)
+    options["created"] = datetime.now(timezone.utc).isoformat("T", "seconds")
+    options["expires"] = (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(
+        "T", "seconds"
+    )
+    options = DataIntegrity().default_options()
+    status_list_vc = await DataIntegrity().issue_credential(
+        status_list_credential, options
+    )
+    return JSONResponse(
+        status_code=200,
+        headers={"Content-Type": "application/vc"},
+        content=status_list_vc
+    )

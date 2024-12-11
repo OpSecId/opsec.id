@@ -15,20 +15,19 @@ KEY_ALG = {"ed25519": KeyAlg.ED25519}
 class AskarWallet:
     def __init__(self):
         self.db = settings.ASKAR_DB
-        self.did_web = f'did:web:{settings.DOMAIN}'
+        self.did_web = f"did:web:{settings.DOMAIN}"
         self.store_key = Store.generate_raw_key(
             hashlib.md5(settings.DOMAIN.encode()).hexdigest()
         )
         self.key = Key(LocalKeyHandle()).from_seed(KeyAlg.ED25519, settings.SECRET_KEY)
         self.multikey = self.key_to_multikey(self.key)
 
-    async def _key(self, alg='ed25519'):
+    async def _key(self, alg="ed25519"):
         return Key(LocalKeyHandle()).from_seed(KEY_ALG[alg], settings.SECRET_KEY)
 
     async def provision(self, recreate=False):
         await Store.provision(self.db, "raw", self.store_key, recreate=recreate)
-        print(f'Multikey: {self.multikey}')
-        
+        print(f"Multikey: {self.multikey}")
 
     def key_to_multikey(self, key):
         return multibase.encode(
@@ -67,7 +66,9 @@ class AskarWallet:
                 alg="ed25519", public=public_bytes
             )
         except:
-            raise HTTPException(status_code=400, detail="Couldn't derive verificaiton key.")
+            raise HTTPException(
+                status_code=400, detail="Couldn't derive verificaiton key."
+            )
 
     # async def get_verification_key(self, public_bytes):
     #     try:

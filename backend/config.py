@@ -9,7 +9,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 class Settings(BaseSettings):
     PROJECT_TITLE: str = "Open and Secure Identity Platform"
     PROJECT_VERSION: str = "v0"
-    
+
     SECRET_KEY: str = os.environ["SECRET_KEY"]
     MULTIKEY: str = os.environ["MULTIKEY"]
 

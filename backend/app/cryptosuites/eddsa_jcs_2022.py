@@ -25,9 +25,9 @@ class EddsaJcs2022:
         """Data Integrity Add Proof Algorithm.
         https://www.w3.org/TR/vc-data-integrity/#add-proof
         """
-        
+
         existing_proof = document.pop("proof", [])
-        
+
         secured_document = document.copy()
         secured_document["proof"] = (
             [existing_proof] if isinstance(existing_proof, dict) else existing_proof
@@ -61,7 +61,9 @@ class EddsaJcs2022:
             sha256(canonicaljson.encode_canonical_json(proof_options)).digest()
             + sha256(canonicaljson.encode_canonical_json(unsecured_document)).digest()
         )
-        public_bytes = Resolver().resolve_verification_method(proof["verificationMethod"])
+        public_bytes = Resolver().resolve_verification_method(
+            proof["verificationMethod"]
+        )
         key = await AskarWallet().get_verification_key(public_bytes)
         # try:
         if key.verify_signature(message=hash_data, signature=signature):

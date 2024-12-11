@@ -8,13 +8,14 @@ from app.plugins.data_integrity import DataIntegrity
 from app.utils import id_from_string
 from multiformats import multibase
 
+
 class BitstringStatusList:
     def __init__(self):
         self.store = AskarStorage()
-        self.did_web = f'did:web:{settings.DOMAIN}'
-        self.did_key = f'did:key:{settings.MULTIKEY}'
+        self.did_web = f"did:web:{settings.DOMAIN}"
+        self.did_key = f"did:key:{settings.MULTIKEY}"
         self.id = str(uuid.uuid5(uuid.NAMESPACE_DNS, self.did_key))
-        self.endpoint = f'https://{settings.DOMAIN}/credentials/status/{self.id}'
+        self.endpoint = f"https://{settings.DOMAIN}/credentials/status/{self.id}"
         self.lenght = 200000
 
     def generate(self, bitstring):
@@ -25,7 +26,6 @@ class BitstringStatusList:
         statusList_encoded = multibase.encode(statusListCompressed, "base64url")
         return statusList_encoded
 
-
     def expand(self, encoded_list):
         # https://www.w3.org/TR/vc-bitstring-status-list/#bitstring-expansion-algorithm
         # statusListCompressed = base64.urlsafe_b64decode(encoded_list)
@@ -34,7 +34,6 @@ class BitstringStatusList:
         statusListBitarray = BitArray(bytes=statusListBytes)
         statusListBitstring = statusListBitarray.bin
         return statusListBitstring
-
 
     async def create(self):
         # https://www.w3.org/TR/vc-bitstring-status-list/#example-example-bitstringstatuslistcredential
@@ -47,39 +46,35 @@ class BitstringStatusList:
             "credentialSubject": {
                 "type": "BitstringStatusList",
                 "encodedList": self.generate(str(0) * self.lenght),
-                "statusPurpose": ['revocation', 'suspension']
+                "statusPurpose": ["revocation", "suspension"],
             },
         }
-        print(f'Status List: {self.endpoint}')
-        await AskarStorage().store('statusListCredential', self.id, status_list_credential)
-        await AskarStorage().store('statusListEntries', self.id, [0, self.lenght - 1])
+        print(f"Status List: {self.endpoint}")
+        await AskarStorage().store(
+            "statusListCredential", self.id, status_list_credential
+        )
+        await AskarStorage().store("statusListEntries", self.id, [0, self.lenght - 1])
 
-
-    async def create_entry(self, purpose='revocation'):
+    async def create_entry(self, purpose="revocation"):
         # https://www.w3.org/TR/vc-bitstring-status-list/#example-example-statuslistcredential
         storage = AskarStorage()
-        status_entries = await storage.fetch('statusListEntries', self.id)
+        status_entries = await storage.fetch("statusListEntries", self.id)
         # Find an unoccupied index
         status_index = random.choice(
-            [
-                e
-                for e in range(self.lenght - 1)
-                if e not in status_entries
-            ]
+            [e for e in range(self.lenght - 1) if e not in status_entries]
         )
         status_entries.append(status_index)
-        await storage.update('statusListEntries', self.id, status_entries)
+        await storage.update("statusListEntries", self.id, status_entries)
 
         credential_status_entry = {
-            'id': f'{self.endpoint}#{status_index}',
-            'type': 'BitstringStatusListEntry',
-            'statusPurpose': purpose,
-            'statusListIndex': str(status_index),
-            'statusListCredential': self.endpoint
+            "id": f"{self.endpoint}#{status_index}",
+            "type": "BitstringStatusListEntry",
+            "statusPurpose": purpose,
+            "statusListIndex": str(status_index),
+            "statusListCredential": self.endpoint,
         }
 
         return credential_status_entry
-
 
     def get_credential_status(self, vc, statusType):
         # https://www.w3.org/TR/vc-bitstring-status-list/#validate-algorithm
@@ -95,12 +90,15 @@ class BitstringStatusList:
         credentialStatusBit = statusList[statusListIndex]
         return True if credentialStatusBit == "1" else False
 
-
-    async def change_credential_status(self, vc, statusBit, did_label, statusListCredentialId):
+    async def change_credential_status(
+        self, vc, statusBit, did_label, statusListCredentialId
+    ):
         statusList_index = vc["credentialStatus"]["statusListIndex"]
 
         dataKey = askar.statusCredentialDataKey(did_label, statusListCredentialId)
-        statusListCredential = await askar.fetch_data(settings.ASKAR_PUBLIC_STORE_KEY, dataKey)
+        statusListCredential = await askar.fetch_data(
+            settings.ASKAR_PUBLIC_STORE_KEY, dataKey
+        )
         statusListEncoded = statusListCredential["credentialSubject"]["encodedList"]
         statusListBitstring = self.expand(statusListEncoded)
         statusList = list(statusListBitstring)
@@ -127,7 +125,9 @@ class BitstringStatusList:
 async def get_status_list_credential(did_label, statusListCredentialId):
     try:
         dataKey = askar.statusCredentialDataKey(did_label, statusListCredentialId)
-        statusListCredential = await askar.fetch_data(settings.ASKAR_PUBLIC_STORE_KEY, dataKey)
+        statusListCredential = await askar.fetch_data(
+            settings.ASKAR_PUBLIC_STORE_KEY, dataKey
+        )
     except:
         return ValidationException(
             status_code=404,

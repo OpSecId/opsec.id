@@ -11,10 +11,14 @@ class BaseModel(BaseModel):
 
 class DataIntegrityProof(BaseModel):
     id: SkipJsonSchema[str] = Field(None)
-    type: Union[str, List[str]] = Field(example='DataIntegrityProof')
-    cryptosuite: str = Field(example='eddsa-jcs-2022')
-    verificationMethod: str = Field(example=f'did:key:{settings.MULTIKEY}#{settings.MULTIKEY}')
+    type: Union[str, List[str]] = Field(example="DataIntegrityProof")
+    cryptosuite: str = Field(example="eddsa-jcs-2022")
+    verificationMethod: str = Field(
+        example=f"did:key:{settings.MULTIKEY}#{settings.MULTIKEY}"
+    )
     created: SkipJsonSchema[str] = Field(None)
     expires: SkipJsonSchema[str] = Field(None)
-    proofPurpose: str = Field(example='assertionMethod')
-    proofValue: str = Field(example='z5FoDF2xxXxnvKLd9ArsPUgCrQbvSGPCQStHa8vU3jntKZSRnW389jFhp6y2KcBUrKxoTNQzDQCKK2zmJG2ZoJD5e')
+    proofPurpose: str = Field(example="assertionMethod")
+    proofValue: str = Field(
+        example="z5FoDF2xxXxnvKLd9ArsPUgCrQbvSGPCQStHa8vU3jntKZSRnW389jFhp6y2KcBUrKxoTNQzDQCKK2zmJG2ZoJD5e"
+    )

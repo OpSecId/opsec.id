@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["PatStLouis <patrick.st-louis@opsecid.ca>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+vcdm = "^0.2.0"
+fastapi = {extras = ["standard"], version = "^0.115.4"}
+aries-askar = "^0.3.2"
+pydantic-settings = "^2.6.1"
+multiformats = "^0.3.1.post4"
+canonicaljson = "^2.0.0"
+bitstring = "^4.2.3"
+deepdiff = "^8.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
