@@ -53,11 +53,7 @@ class VcJose:
             "cty": "vc+ld+json",
         }
         jwt_token = await self.sign(headers, credential)
-        return {
-            "@context": "https://www.w3.org/ns/credentials/v2",
-            "id": f"data:application/vc+jwt,{jwt_token}",
-            "type": "EnvelopedVerifiableCredential",
-        }
+        return jwt_token
 
     def verify_credential(self, credential):
         jwt_token = credential["id"].split(",")[-1]

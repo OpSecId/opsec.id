@@ -37,8 +37,8 @@ class LDProcessor:
         # pprint(diff)
 
     def detect_undefined_terms(self, document):
-        if not document.get('@context'):
-            return True
+        if not document.get('@context', None):
+            raise LDProcessorError("No context")
         contexts = document['@context'] if isinstance(document['@context'], list) else [document['@context']]
         document['@context'] = [self.load_cached_ctx(context_url) for context_url in contexts]
         diff = DeepDiff(
@@ -47,9 +47,9 @@ class LDProcessor:
         )
         # pprint(diff)
         if diff.get('dictionary_item_removed'):
-            return True
+            raise LDProcessorError("Missing term definition")
         if diff.get('values_changed'):
-            return True
+            raise LDProcessorError("Missing term definition")
         return False
 
     def dropped_types(self):

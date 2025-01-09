@@ -60,6 +60,7 @@ def datetime_range(days=None, minutes=None):
 
 async def process_request(request):
     request_body = await request.body()
+    print(request_body)
     request_body = (
         json.loads(request_body.decode())
         if isinstance(request_body, bytes)
