@@ -1,0 +1,36 @@
+{
+  "@context": "https://www.w3.org/ns/cid/v1",
+  "id": "did:web:opsec.id",
+  "alsoKnownAs": ["https://opsec.id"],
+  "verificationMethod": [
+    {
+      "id": "did:web:opsec.id#key-0",
+      "type": "Multikey",
+      "controller": "did:web:opsec.id",
+      "publicKeyMultibase": "z6MkwHAfotoRgkYeS4xDMSMQdQfiTHsmKq82qudwcD5YdCo9"
+    },
+    {
+      "id": "did:web:opsec.id#key-1",
+      "type": "JsonWebKey",
+      "controller": "did:web:opsec.id",
+      "publicKeyJwk": {
+        "kty": "OKP",
+        "crv": "Ed25519",
+        "x": "-gDKn-t_5OYwjr42FNzwDA4YpKI7nEkaosFQZnuGDJA"
+      }
+    }
+  ],
+  "authentication": [
+    "did:web:opsec.id#key-0"
+  ],
+  "assertionMethod": [
+    "did:web:opsec.id#key-0",
+    "did:web:opsec.id#key-1"
+  ],
+  "capabilityDelegation": [
+    "did:web:opsec.id#key-0"
+  ],
+  "capabilityInvocation": [
+    "did:web:opsec.id#key-0"
+  ]
+}
