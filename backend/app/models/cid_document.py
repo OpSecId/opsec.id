@@ -9,9 +9,9 @@ class BaseModel(BaseModel):
 
 
 class CidDocument(BaseModel):
-    context: List[str] = Field(
-        ["https://www.w3.org/ns/cid/v1"]
-    )
+    # context: List[str] = Field(
+    #     ["https://www.w3.org/ns/cid/v1"]
+    # )
     id: str = Field()
     alsoKnownAs: List[str] = Field(None)
     authentication: List[str] = Field(None)
