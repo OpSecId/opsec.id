@@ -3,7 +3,7 @@ from fastapi import FastAPI, APIRouter, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from app.routers import credentials, presentations
+from app.routers import credentials, presentations, identifiers
 from config import settings
 from app.plugins import AskarStorage
 
@@ -35,12 +35,7 @@ async def server_status():
     return JSONResponse(status_code=200, content={"status": "ok"})
 
 
-@api_router.get("/.well-known/did.json", include_in_schema=False)
-async def get_did_document():
-    did_doc = await AskarStorage().fetch("didDocument", f"did:web:{settings.DOMAIN}")
-    return JSONResponse(status_code=200, content=did_doc)
-
-
+api_router.include_router(identifiers.router)
 api_router.include_router(credentials.router)
 api_router.include_router(presentations.router)
 
