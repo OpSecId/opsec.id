@@ -14,17 +14,9 @@ async def redirect_to_cid():
 
 @router.get("/.well-known/cid.json", include_in_schema=False)
 async def get_cid_document():
-    controller = f'https://{settings.DOMAIN}'
     cid_doc = CidDocument(
-        id=controller,
-        verificationMethod=[
-            VerificationMethod(
-                id=f'{controller}#key-0',
-                controller=controller,
-                publicKeyMultibase=settings.MULTIKEY
-            )
-        ]
-    )
+        id=f'https://{settings.DOMAIN}'
+    ).model_dump()
     return JSONResponse(status_code=200, content=cid_doc)
 
 @router.get("/.well-known/did.json", include_in_schema=False)
@@ -39,5 +31,5 @@ async def get_did_document():
                 publicKeyMultibase=settings.MULTIKEY
             )
         ]
-    )
+    ).model_dump()
     return JSONResponse(status_code=200, content=did_doc)

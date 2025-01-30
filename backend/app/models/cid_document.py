@@ -1,23 +1,11 @@
 from typing import Union, List, Dict, Any
 from pydantic import Field, BaseModel
+from app.models.did_document import VerificationMethod, Service
 
 
 class BaseModel(BaseModel):
     def model_dump(self, **kwargs) -> Dict[str, Any]:
         return super().model_dump(by_alias=True, exclude_none=True, **kwargs)
-
-
-class VerificationMethod(BaseModel):
-    id: str = Field()
-    type: str = Field("Multikey")
-    controller: str = Field()
-    publicKeyMultibase: str = Field()
-
-
-class Service(BaseModel):
-    id: str = Field()
-    type: str = Field()
-    serviceEndpoint: str = Field()
 
 
 class CidDocument(BaseModel):
