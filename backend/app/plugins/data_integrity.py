@@ -24,10 +24,14 @@ class DataIntegrity:
 
     async def issue_credential(self, credential, options):
         issuer = self.get_issuer(credential)
-        multikey = issuer.lstrip("did:key:")
+        multikey = settings.MULTIKEY
         cryptosuite = CRYPTOSUITES[options["cryptosuite"]]
         options["proofPurpose"] = "assertionMethod"
-        options["verificationMethod"] = f"{issuer}#{multikey}"
+        if 'did:key:' in issuer:
+            options["verificationMethod"] = f"{issuer}#{multikey}"
+        else:
+            options["verificationMethod"] = f"{issuer}#key-0"
+            
 
         secured_document = credential.copy()
         input_document = credential.copy()
