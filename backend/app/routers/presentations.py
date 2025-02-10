@@ -69,7 +69,7 @@ async def verify_signed_presentation(request: Request):
         except:
             raise HTTPException(status_code=400)
 
-        # verification_results = await DataIntegrity().verify_credential(vp, options)
+        verification_results = await DataIntegrity().verify_credential(vp, options)
         verification_results = {'verified': True}
     
     
